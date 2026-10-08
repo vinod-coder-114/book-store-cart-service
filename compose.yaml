@@ -1,10 +1,51 @@
 services:
   mysql:
-    image: 'mysql:latest'
+    image: 'mysql:8.4'
+    container_name: bookstore-cart-mysql
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-cart_db}
+      MYSQL_USER: ${CART_DB_USERNAME:-cart_user}
+      MYSQL_PASSWORD: ${CART_DB_PASSWORD:-cart_dev_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-cart_root_dev_password}
     ports:
-      - '3306'
+      - '${MYSQL_PORT:-3308}:3306'
+    volumes:
+        - mysql-data:/var/lib/mysql
+        - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-u', 'root', '--password=$$MYSQL_ROOT_PASSWORD']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+        - bookstore-net
+
+  book-store-cart-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: book-store-cart-service
+    environment:
+      SERVER_PORT: ${SERVICE_PORT:-9090}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-cart_db}
+      SPRING_DATASOURCE_USERNAME: ${CART_DB_USERNAME:-cart_user}
+      SPRING_DATASOURCE_PASSWORD: ${CART_DB_PASSWORD:-cart_dev_password}
+      USER_SERVICE_URL: ${USER_SERVICE_URL:-http://user-service:8081}
+      CATALOG_SERVICE_URL: ${CATALOG_SERVICE_URL:-http://catalog-service:8082}
+
+    ports:
+      - '${SERVICE_PORT:-9090}:9090'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+        - bookstore-net
+
+networks:
+  bookstore-net:
+    external: true
+    name: book-store-user-service_bookstore-net
+
+volumes:
+  mysql-data:
