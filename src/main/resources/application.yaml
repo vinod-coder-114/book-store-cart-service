@@ -1,3 +1,53 @@
+server:
+  port: ${CART_SERVICE_PORT:9090}
+
 spring:
+  docker:
+    compose:
+      enabled: true
   application:
     name: cart-service
+  datasource:
+    url: ${CART_DB_URL:jdbc:mysql://localhost:3306/cart_db}
+    username: ${CART_DB_USERNAME:root}
+    password: ${CART_DB_PASSWORD:root123}
+  jpa:
+    show-sql: ${CART_JPA_SHOW_SQL:true}
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${CART_JWT_JWK_SET_URI:${USER_SERVICE_URL:http://localhost:8081}/.well-known/jwks.json}
+          issuer-uri: ${CART_JWT_ISSUER_URI:${USER_SERVICE_URL:http://localhost:8081}}
+          audience: ${CART_JWT_AUDIENCE:cart-service}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+catalog:
+  service:
+    base-url: ${CATALOG_SERVICE_URL:http://localhost:8082}
+    connect-timeout: ${CATALOG_SERVICE_CONNECT_TIMEOUT:2s}
+    read-timeout: ${CATALOG_SERVICE_READ_TIMEOUT:5s}
+
+
+cart:
+  rules:
+    max-quantity-per-item: ${CART_MAX_QUANTITY_PER_ITEM:20}
+  security:
+    jwt:
+      public-key-location:
