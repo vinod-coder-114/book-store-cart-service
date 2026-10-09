@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS carts (
 CREATE TABLE IF NOT EXISTS cart_items (
     id BINARY(16) NOT NULL,
     cart_id BINARY(16) NOT NULL,
-    book_id BINARY(16) NOT NULL,
+    book_id VARCHAR(64) NOT NULL,
     quantity INT NOT NULL,
     unit_price DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP(6) NOT NULL,

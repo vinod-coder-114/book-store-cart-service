@@ -46,7 +46,7 @@ public class CartTransactionService {
     }
 
     @Transactional
-    public Cart addBook(UUID userId, UUID bookId, int quantity) {
+    public Cart addBook(UUID userId, String bookId, int quantity) {
         logger.info("Adding book with bookId: {} and quantity: {} to cart for userId: {}", bookId, quantity, userId);
         Cart cart = getOrCreateOpenCart(userId);
         int targetQuantity = Math.addExact(currentQuantity(cart, bookId), quantity);
@@ -56,7 +56,7 @@ public class CartTransactionService {
     }
 
     @Transactional
-    public Cart updateBookQuantity(UUID userId, UUID bookId, int quantity) {
+    public Cart updateBookQuantity(UUID userId, String bookId, int quantity) {
         logger.info("Updating book quantity with bookId: {} and quantity: {} for userId: {}", bookId, quantity, userId);
         Cart cart = getCartForUpdate(userId);
         ensureItemPresent(cart, bookId);
@@ -66,7 +66,7 @@ public class CartTransactionService {
     }
 
     @Transactional
-    public Cart removeBook(UUID userId, UUID bookId) {
+    public Cart removeBook(UUID userId, String bookId) {
         logger.info("Removing book with bookId: {} from cart for userId: {}", bookId, userId);
         Cart cart = getCartForUpdate(userId);
         cart.removeBook(bookId);
@@ -118,7 +118,7 @@ public class CartTransactionService {
                 .orElseThrow(CartNotFoundException::new);
     }
 
-    private static int currentQuantity(Cart cart, UUID bookId) {
+    private static int currentQuantity(Cart cart, String bookId) {
         return cart.getItems().stream()
                 .filter(item -> item.getBookId().equals(bookId))
                 .mapToInt(CartItem::getQuantity)
@@ -126,7 +126,7 @@ public class CartTransactionService {
                 .orElse(0);
     }
 
-    private static void ensureItemPresent(Cart cart, UUID bookId) {
+    private static void ensureItemPresent(Cart cart, String bookId) {
         boolean present = cart.getItems().stream()
                 .map(CartItem::getBookId)
                 .anyMatch(bookId::equals);

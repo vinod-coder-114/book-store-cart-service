@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CartTest {
 
     private final UUID userId = UUID.randomUUID();
-    private final UUID bookId = UUID.randomUUID();
+    private final String bookId = UUID.randomUUID().toString();
 
     @Test
     void addingAnExistingBookIncrementsQuantityAndPreservesPriceSnapshot() {
@@ -57,7 +57,7 @@ class CartTest {
     @Test
     void subtotalAndCountSemanticsAreDerivedFromStoredSnapshots() {
         Cart cart = Cart.createFor(userId);
-        UUID secondBookId = UUID.randomUUID();
+        String secondBookId = UUID.randomUUID().toString();
         cart.addBook(bookId, 2, new BigDecimal("12.50"));
         cart.addBook(secondBookId, 1, new BigDecimal("7.25"));
 

@@ -2,10 +2,9 @@ package com.bookstore.cartservice.cart.integration.catalog;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.UUID;
 
 public record CatalogBook(
-        UUID id,
+        String id,
         BigDecimal unitPrice,
         String currency,
         long stock

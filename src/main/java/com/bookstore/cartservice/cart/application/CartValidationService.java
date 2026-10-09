@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class CartValidationService {
@@ -31,7 +30,7 @@ public class CartValidationService {
         this.cartRulesProperties = cartRulesProperties;
     }
 
-    public CatalogBook validateBookChange(UUID bookId, int requestedQuantity) {
+    public CatalogBook validateBookChange(String bookId, int requestedQuantity) {
         if (requestedQuantity <= 0) {
             throw new CartRuleViolationException("Quantity must be greater than zero");
         }

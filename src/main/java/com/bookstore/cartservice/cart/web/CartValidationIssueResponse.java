@@ -3,10 +3,9 @@ package com.bookstore.cartservice.cart.web;
 import com.bookstore.cartservice.cart.application.CartValidationIssue;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public record CartValidationIssueResponse(
-        UUID bookId,
+        String bookId,
         String code,
         String message,
         Integer requestedQuantity,

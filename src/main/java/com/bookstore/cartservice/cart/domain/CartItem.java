@@ -41,8 +41,8 @@ public class CartItem {
     private Cart cart;
 
     @Getter
-    @Column(name = "book_id", nullable = false, columnDefinition = "binary(16)")
-    private UUID bookId;
+    @Column(name = "book_id", nullable = false, length = 64)
+    private String bookId;
 
     @Getter
     @Column(name = "quantity", nullable = false)
@@ -63,7 +63,7 @@ public class CartItem {
     protected CartItem() {
     }
 
-    CartItem(Cart cart, UUID bookId, int quantity, BigDecimal unitPrice) {
+    CartItem(Cart cart, String bookId, int quantity, BigDecimal unitPrice) {
         this.cart = Objects.requireNonNull(cart, "cart must not be null");
         this.bookId = Objects.requireNonNull(bookId, "bookId must not be null");
         this.quantity = quantity;
