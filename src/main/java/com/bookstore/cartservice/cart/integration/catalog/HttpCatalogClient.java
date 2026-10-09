@@ -9,7 +9,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 final class HttpCatalogClient implements CatalogClient {
 
@@ -20,7 +19,7 @@ final class HttpCatalogClient implements CatalogClient {
     }
 
     @Override
-    public CatalogBook getBook(UUID bookId) {
+    public CatalogBook getBook(String bookId) {
         try {
             CatalogBookResponse response = restClient.get()
                     .uri("/api/catalog/books/{bookId}", bookId)
@@ -40,7 +39,7 @@ final class HttpCatalogClient implements CatalogClient {
         }
     }
 
-    private static CatalogBook map(UUID requestedBookId, CatalogBookResponse response) {
+    private static CatalogBook map(String requestedBookId, CatalogBookResponse response) {
         if (response == null) {
             throw new CatalogResponseException("Catalog service returned an empty response body");
         }
@@ -51,7 +50,7 @@ final class HttpCatalogClient implements CatalogClient {
             throw new CatalogResponseException("Catalog response contains invalid stock for book " + requestedBookId);
         }
 
-        UUID responseBookId = parseBookId(requestedBookId, response.id());
+        String responseBookId = parseBookId(requestedBookId, response.id());
         String currency = response.pricing().currency();
         if (currency == null || currency.isBlank()) {
             throw new CatalogResponseException("Catalog response missing currency for book " + requestedBookId);
@@ -72,15 +71,11 @@ final class HttpCatalogClient implements CatalogClient {
         );
     }
 
-    private static UUID parseBookId(UUID requestedBookId, String rawBookId) {
+    private static String parseBookId(String requestedBookId, String rawBookId) {
         if (rawBookId == null || rawBookId.isBlank()) {
             throw new CatalogResponseException("Catalog response missing book id for book " + requestedBookId);
         }
-        try {
-            return UUID.fromString(rawBookId);
-        } catch (IllegalArgumentException exception) {
-            throw new CatalogResponseException("Catalog returned a non-UUID book id: " + rawBookId, exception);
-        }
+        return rawBookId;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

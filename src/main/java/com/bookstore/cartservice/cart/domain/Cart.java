@@ -83,7 +83,7 @@ public class Cart {
         return new Cart(userId);
     }
 
-    public CartItem addBook(UUID bookId, int quantity, BigDecimal unitPrice) {
+    public CartItem addBook(String bookId, int quantity, BigDecimal unitPrice) {
         requireActive();
         Objects.requireNonNull(bookId, "bookId must not be null");
         validateQuantity(quantity);
@@ -103,7 +103,7 @@ public class Cart {
         return item;
     }
 
-    public void updateBookQuantity(UUID bookId, int quantity) {
+    public void updateBookQuantity(String bookId, int quantity) {
         requireActive();
         Objects.requireNonNull(bookId, "bookId must not be null");
         validateQuantity(quantity);
@@ -112,7 +112,7 @@ public class Cart {
         markUpdated();
     }
 
-    public boolean removeBook(UUID bookId) {
+    public boolean removeBook(String bookId) {
         requireActive();
         Objects.requireNonNull(bookId, "bookId must not be null");
 
@@ -202,7 +202,7 @@ public class Cart {
         updatedAt = Instant.now();
     }
 
-    private CartItem findItem(UUID bookId) {
+    private CartItem findItem(String bookId) {
         return items.stream()
                 .filter(item -> item.getBookId().equals(bookId))
                 .findFirst()

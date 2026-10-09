@@ -22,7 +22,7 @@ class CartValidationServiceTest {
 
     @Test
     void validateBookChangeRejectsConfiguredMaximum() {
-        UUID bookId = UUID.randomUUID();
+        String bookId = UUID.randomUUID().toString();
         CartValidationService service = new CartValidationService(
                 new StubCatalogClient(Map.of(bookId, new CatalogBook(bookId, new BigDecimal("12.50"), "INR", 10))),
                 rulesWithMax(5)
@@ -36,7 +36,7 @@ class CartValidationServiceTest {
 
     @Test
     void validateBookChangeRejectsOutOfStockRequests() {
-        UUID bookId = UUID.randomUUID();
+        String bookId = UUID.randomUUID().toString();
         CartValidationService service = new CartValidationService(
                 new StubCatalogClient(Map.of(bookId, new CatalogBook(bookId, new BigDecimal("12.50"), "INR", 2))),
                 rulesWithMax(10)
@@ -51,7 +51,7 @@ class CartValidationServiceTest {
     @Test
     void validateForCheckoutReturnsValidWhenCatalogStateStillMatchesCart() {
         UUID userId = UUID.randomUUID();
-        UUID bookId = UUID.randomUUID();
+        String bookId = UUID.randomUUID().toString();
         Cart cart = Cart.createFor(userId);
         cart.addBook(bookId, 2, new BigDecimal("12.50"));
 
@@ -69,8 +69,8 @@ class CartValidationServiceTest {
     @Test
     void validateForCheckoutReturnsStructuredIssuesForChangedCatalogState() {
         UUID userId = UUID.randomUUID();
-        UUID priceAndStockBookId = UUID.randomUUID();
-        UUID missingBookId = UUID.randomUUID();
+        String priceAndStockBookId = UUID.randomUUID().toString();
+        String missingBookId = UUID.randomUUID().toString();
         Cart cart = Cart.createFor(userId);
         cart.addBook(priceAndStockBookId, 2, new BigDecimal("12.50"));
         cart.addBook(missingBookId, 1, new BigDecimal("5.00"));
@@ -102,15 +102,15 @@ class CartValidationServiceTest {
 
     private static final class StubCatalogClient implements CatalogClient {
 
-        private final Map<UUID, CatalogBook> books;
-        private final Map<UUID, RuntimeException> failures = new HashMap<>();
+        private final Map<String, CatalogBook> books;
+        private final Map<String, RuntimeException> failures = new HashMap<>();
 
-        private StubCatalogClient(Map<UUID, CatalogBook> books) {
+        private StubCatalogClient(Map<String, CatalogBook> books) {
             this.books = books;
         }
 
         @Override
-        public CatalogBook getBook(UUID bookId) {
+        public CatalogBook getBook(String bookId) {
             RuntimeException failure = failures.get(bookId);
             if (failure != null) {
                 throw failure;

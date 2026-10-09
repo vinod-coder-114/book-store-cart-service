@@ -49,14 +49,14 @@ public class CartController {
 
     @PutMapping("/items/{bookId}")
     public ResponseEntity<CartResponse> updateItemQuantity(@AuthenticationPrincipal Jwt jwt,
-                                                           @PathVariable UUID bookId,
+                                                           @PathVariable String bookId,
                                                            @Valid @RequestBody CartQuantityUpdateRequest request) {
         Cart cart = cartTransactionService.updateBookQuantity(currentUserId(jwt), bookId, request.quantity());
         return ResponseEntity.ok(CartResponse.from(cart));
     }
 
     @DeleteMapping("/items/{bookId}")
-    public ResponseEntity<CartResponse> removeItem(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID bookId) {
+    public ResponseEntity<CartResponse> removeItem(@AuthenticationPrincipal Jwt jwt, @PathVariable String bookId) {
         Cart cart = cartTransactionService.removeBook(currentUserId(jwt), bookId);
         return ResponseEntity.ok(CartResponse.from(cart));
     }

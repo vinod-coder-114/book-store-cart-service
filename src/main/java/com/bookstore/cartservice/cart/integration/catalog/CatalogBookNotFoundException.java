@@ -1,14 +1,13 @@
 package com.bookstore.cartservice.cart.integration.catalog;
 
-import java.util.UUID;
 
 public class CatalogBookNotFoundException extends CatalogIntegrationException {
 
-    public CatalogBookNotFoundException(UUID bookId) {
+    public CatalogBookNotFoundException(String bookId) {
         super("Catalog book not found: " + bookId);
     }
 
-    public CatalogBookNotFoundException(UUID bookId, Throwable cause) {
+    public CatalogBookNotFoundException(String bookId, Throwable cause) {
         super("Catalog book not found: " + bookId, cause);
     }
 }

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CartControllerTest {
 
     private static final UUID USER_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
-    private static final UUID BOOK_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
+    private static final String BOOK_ID = "22222222-2222-2222-2222-222222222222";
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,7 +67,7 @@ class CartControllerTest {
                                 """.formatted(BOOK_ID)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value("ACTIVE"))
-                .andExpect(jsonPath("$.items[0].bookId").value(BOOK_ID.toString()))
+                .andExpect(jsonPath("$.items[0].bookId").value(BOOK_ID))
                 .andExpect(jsonPath("$.items[0].quantity").value(2))
                 .andExpect(jsonPath("$.totalUnits").value(2))
                 .andExpect(jsonPath("$.distinctItemCount").value(1))
