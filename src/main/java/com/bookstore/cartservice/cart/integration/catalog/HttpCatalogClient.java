@@ -56,7 +56,7 @@ final class HttpCatalogClient implements CatalogClient {
             throw new CatalogResponseException("Catalog response missing currency for book " + requestedBookId);
         }
 
-        Integer priceMinorUnits = response.pricing().salePrice() != null
+        Double priceMinorUnits = response.pricing().salePrice() != null
                 ? response.pricing().salePrice()
                 : response.pricing().listPrice();
         if (priceMinorUnits == null || priceMinorUnits < 0) {
@@ -65,7 +65,7 @@ final class HttpCatalogClient implements CatalogClient {
 
         return new CatalogBook(
                 responseBookId,
-                BigDecimal.valueOf(priceMinorUnits.longValue(), 2),
+                BigDecimal.valueOf(priceMinorUnits),
                 currency,
                 response.stock()
         );
@@ -82,7 +82,7 @@ final class HttpCatalogClient implements CatalogClient {
     private record CatalogBookResponse(String id, Pricing pricing, Long stock) {
 
         @JsonIgnoreProperties(ignoreUnknown = true)
-        private record Pricing(String currency, Integer salePrice, Integer listPrice) {
+        private record Pricing(String currency, Double salePrice, Double listPrice) {
         }
     }
 }
